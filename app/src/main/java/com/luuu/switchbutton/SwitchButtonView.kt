@@ -81,9 +81,7 @@ class SwitchButtonView : View {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var widthSpecMode = MeasureSpec.getMode(widthMeasureSpec)
         var widthSpecSize = MeasureSpec.getSize(widthMeasureSpec)
-        var heightSpecMode = MeasureSpec.getMode(heightMeasureSpec)
         var heightSpecSize = MeasureSpec.getSize(heightMeasureSpec)
 
         widthSpecSize += paddingLeft + paddingRight
@@ -98,10 +96,13 @@ class SwitchButtonView : View {
 
         circleRadius = mHeight/2f
         sliderLength = mWidth/2f
+
         buttonPaint.isAntiAlias = true
         buttonPaint.color = buttonBackgroundColor
+
         sliderPaint.isAntiAlias = true
         sliderPaint.color = sliderColor
+
         textPain.strokeWidth = 3f
         textPain.textSize = textSize.toFloat()
         textPain.textAlign = Paint.Align.CENTER

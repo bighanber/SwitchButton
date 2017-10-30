@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SwitchButton">
+        <attr name="btn_leftText" format="reference|string" />
+        <attr name="btn_rightText" format="reference|string" />
+        <attr name="btn_textSize" format="reference|dimension" />
+        <attr name="btn_sliderColor" format="reference|color" />
+        <attr name="btn_buttonBackgroundColor" format="reference|color" />
+        <attr name="btn_selectTxtColor" format="reference|color" />
+        <attr name="btn_unSelectTxtColor" format="reference|color" />
+    </declare-styleable>
+</resources>

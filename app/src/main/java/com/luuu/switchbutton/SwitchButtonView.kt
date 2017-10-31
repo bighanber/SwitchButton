@@ -29,7 +29,9 @@ class SwitchButtonView : View {
     private lateinit var fontMetrics: Paint.FontMetricsInt
     private var baseline = 0f
 
+    //按钮背景
     private var buttonBackgroundColor = 0XFFFFFFFF.toInt()
+    //滑块背景
     private var sliderColor = 0xFF066FA5.toInt()
     private var buttonPaint = Paint()
     private var sliderPaint = Paint()
@@ -40,10 +42,14 @@ class SwitchButtonView : View {
 
     private var mWidth = 0
     private var mHeight = 0
+    //动画变量，控制滑块移动
     private var moveAnim = 0f
+    //滑块可移动的距离
     private var sliderLength= 0f
     private var circleRadius = 0f
+    //右边圆形的移动距离
     private var rightMoveDis = 0f
+    //左边圆形的移动距离
     private var leftMoveDis = 0f
 
     private var isSelect = false
@@ -126,7 +132,7 @@ class SwitchButtonView : View {
 
     private fun drawSlider(canvas: Canvas?) {
         canvas?.save()
-        //右边圆球移动的距离
+        //右边圆球移动的距离，moveAnim在0-0.5的时候控制右边球的移动
         rightMoveDis = sliderLength - circleRadius + sliderLength * Math.min(1f, moveAnim * 2)
         canvas?.drawCircle(rightMoveDis, circleRadius, circleRadius, sliderPaint)
 
@@ -134,6 +140,8 @@ class SwitchButtonView : View {
         leftMoveDis = circleRadius + sliderLength * (if (moveAnim < 0.5) 0f else Math.abs(0.5f - moveAnim) * 2)
         canvas?.drawCircle(leftMoveDis, circleRadius, circleRadius, sliderPaint)
 
+        //绘制两球的贝塞尔曲线连接
+        //控制点会根据左右球移动来增大和减小
         if (moveAnim in 0.0..1.0) {
             curvePath.rewind()
             curvePath.moveTo(leftMoveDis, 0f)

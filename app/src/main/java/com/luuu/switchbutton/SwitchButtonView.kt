@@ -9,7 +9,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AccelerateInterpolator
+import android.view.animation.AccelerateDecelerateInterpolator
 
 /**
  * Created by lls on 2017/10/27.
@@ -30,9 +30,9 @@ class SwitchButtonView : View {
     private var baseline = 0f
 
     //按钮背景
-    private var buttonBackgroundColor = 0XFFFFFFFF.toInt()
+    private var buttonBackgroundColor = 0xFF58B4AB.toInt()
     //滑块背景
-    private var sliderColor = 0xFF066FA5.toInt()
+    private var sliderColor = 0xFFFFFFFF.toInt()
     private var buttonPaint = Paint()
     private var sliderPaint = Paint()
     private var textPain = Paint()
@@ -51,6 +51,7 @@ class SwitchButtonView : View {
     private var rightMoveDis = 0f
     //左边圆形的移动距离
     private var leftMoveDis = 0f
+    private var textAlpha = 255
 
     private var isSelect = false
     private var onSelectedChangeListener: OnSelectedChangeListener? = null
@@ -125,6 +126,7 @@ class SwitchButtonView : View {
         if (moveAnim == 0f || moveAnim == 1f) {
             isSelect = !isSelect
             startAnimator(isSelect)
+            leftTextAlphaAnimator()
             onSelectedChangeListener?.onSelectedChange(if (isSelect) BUTTON_STATE_RIGHT else BUTTON_STATE_LEFT)
         }
         return super.onTouchEvent(event)
@@ -145,13 +147,11 @@ class SwitchButtonView : View {
         if (moveAnim in 0.0..1.0) {
             curvePath.rewind()
             curvePath.moveTo(leftMoveDis, 0f)
-            curvePath.cubicTo(leftMoveDis, 0f,
-                    (rightMoveDis + leftMoveDis)/2,
+            curvePath.quadTo((rightMoveDis + leftMoveDis)/2,
                     if (moveAnim <= 0.5) circleRadius * (moveAnim * 2f) else circleRadius * ((1 - moveAnim) * 2f),
                     rightMoveDis, 0f)
             curvePath.lineTo(rightMoveDis, mHeight.toFloat())
-            curvePath.cubicTo(rightMoveDis, mHeight.toFloat(),
-                    (rightMoveDis + leftMoveDis)/2,
+            curvePath.quadTo((rightMoveDis + leftMoveDis)/2,
                     if (moveAnim <= 0.5) 2f * circleRadius * (1 - moveAnim) else 2f * circleRadius * moveAnim,
                     leftMoveDis, mHeight.toFloat())
             curvePath.close()
@@ -167,6 +167,7 @@ class SwitchButtonView : View {
         canvas?.clipRect(textRectF)
 
         textPain.color = if (isSelect) if (moveAnim > 0.5) unSelectTxtColor else selectTxtColor else if (moveAnim < 0.5) selectTxtColor else unSelectTxtColor
+        textPain.alpha = textAlpha
         baseline = (textRectF.bottom + textRectF.top - fontMetrics.bottom - fontMetrics.top) / 2
         canvas?.drawText(leftText, textRectF.centerX(), baseline, textPain)
         canvas?.restore()
@@ -179,6 +180,7 @@ class SwitchButtonView : View {
         canvas?.clipRect(textRectF)
 
         textPain.color = if (isSelect) if (moveAnim > 0.5) selectTxtColor else unSelectTxtColor else if (moveAnim < 0.5) unSelectTxtColor else selectTxtColor
+        textPain.alpha = textAlpha
         baseline = (textRectF.bottom + textRectF.top - fontMetrics.bottom - fontMetrics.top) / 2
         canvas?.drawText(rightText, textRectF.centerX(), baseline, textPain)
         canvas?.restore()
@@ -186,13 +188,24 @@ class SwitchButtonView : View {
 
     private fun startAnimator(selectState: Boolean) {
         var anim = ValueAnimator.ofFloat(moveAnim, (if (selectState) 1f else 0f))
-        anim.duration = 500
-        anim.interpolator = AccelerateInterpolator()
+        anim.duration = 800
+        anim.interpolator = AccelerateDecelerateInterpolator()
         anim.addUpdateListener{
             moveAnim = it.animatedValue as Float
             invalidate()
         }
         anim.start()
+    }
+
+    private fun leftTextAlphaAnimator() {
+        val animator = ValueAnimator.ofInt(10, 255)
+        animator.duration = 800
+        animator.interpolator = AccelerateDecelerateInterpolator()
+        animator.addUpdateListener {
+            textAlpha = (it.animatedValue as Int)
+            invalidate()
+        }
+        animator.start()
     }
 
     interface OnSelectedChangeListener {

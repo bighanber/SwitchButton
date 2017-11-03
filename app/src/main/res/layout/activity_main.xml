@@ -13,7 +13,6 @@
         android:layout_centerInParent="true"
         app:btn_leftText="Create"
         app:btn_rightText="Login"
-        app:btn_unSelectTxtColor="#fff"
-        app:btn_buttonBackgroundColor="#000"/>
+        />
 
 </RelativeLayout>
